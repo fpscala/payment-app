@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="css/toastr.min.css">
+<!--  <script type='text/javascript' src='js/jquery.min.js'></script>-->
+<!--  <script type='text/javascript' src='js/knockout-min.js'></script>-->
+<!--  <script type='text/javascript' src='js/knockout.mapping-latest.js'></script>-->
+<!--  <script type='text/javascript' src='js/bootstrap-select.min.js'></script>-->
+<!--  <script type='text/javascript' src='js/moment.min.js'></script>-->
+<!--  <script type='text/javascript' src='js/toastr.min.js'></script>-->
+<!--  <script type='text/javascript' src='js/index.js'></script>-->
+</head>
+<body oncontextmenu="return false;">
+<div class="justify-content-center">
+  <div class="card">
+    <div class="card-content mx-2">
+      <form>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row text-right mt-1">
+              <label for="date" class="col-md-2">Sana:</label>
+              <input class="form-control col-md-4" disabled type="text" id="date" name="date" data-bind="value: vm.currentDateTime()">
+              <label for="number" class="col-md-2">№:</label>
+              <input class="form-control col-md-4" id="number" data-bind="value: vm.payment.id">
+            </div>
+            <div class="form-group row ml-1">
+              <label class="col-md-2">To'lov turi:</label>
+              <label class="col-md-3">
+                <input class="col-md-2" type="radio" name="type" value="Naqd">
+                Naqd
+              </label>
+              <label class="col-md-3">
+                <input class="col-md-2" type="radio" name="type" value="Plastik">
+                Plastik
+              </label>
+              <label class="col-md-3">
+                <input class="col-md-2" type="radio" name="type" value="Hisob raqam">
+                Hisob raqam
+              </label>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <div class="row text-right">
+                  <label for="price" class="col-md-2">Summa:</label>
+                  <input class="form-control col-md-4" type="text" id="price" name="price" data-bind="value: vm.payment.price">
+                  <label for="month" class="col-md-2">Oy:</label>
+                  <select class="form-control bg-white col-md-4" id="month" autocomplete="off"
+                    data-bind="options: vm.list, optionsText: $data, optionsValue: $data, value: vm.payment.month">
+                  </select>
+                </div>
+                <div class="row text-right mt-1">
+                  <label for="course" class="col-md-2 col-form-label">Kurs:</label>
+                  <select class="form-control bg-white col-md-4" id="course"
+                    data-bind="options: vm.directionsList, optionsText: 'name',
+                    optionsValue: 'id', value: vm.payment.directionId, optionsCaption: 'Kursni tanlang'">
+                  </select>
+                  <label for="group" class="col-md-2 col-form-label">Guruh:</label>
+                  <select class="form-control bg-white col-md-4" id="group" autocomplete="off"
+                    data-bind="options: vm.groupsList, optionsText: 'name', optionsValue: 'id', value: vm.payment.groupId">
+                  </select>
+                </div>
+                <div class="row mt-1 ml-1">
+                  <label for="studentName" class="col-form-label">O'quvchi:</label>
+                  <select class="form-control bg-white" id="studentName" autocomplete="off"
+                    data-bind="options: vm.studentsList, optionsText: 'fullname', optionsValue: 'id',
+                    value: vm.payment.studentId">
+                  </select>
+                </div>
+                <div class="row mt-1 ml-1">
+                  <label for="teacherName" class="col-form-label">O'qituvchi:</label>
+                  <input class="form-control" id="teacherName" autocomplete="off" data-bind="value: vm.payment.teacherName">
+                </div>
+                <div class="row mt-1 ml-1">
+                  <label for="comment">Izohlar:</label>
+                  <textarea class="form-control" rows="2" type="text" id="comment" data-bind="value: vm.payment.comment"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mr-0">
+            <div class="row mt-1">
+              <div class="table-responsive col-xl-12 col-md-12 col-12">
+                <table class="table table-bordered table-striped table-hover table-active bg-white">
+                  <thead class="btn-primary">
+                  <tr>
+                    <th>№</th>
+                    <th>Kurs</th>
+                    <th>Guruh</th>
+                    <th>Oy</th>
+                    <th>Qarz</th>
+                  </tr>
+                  </thead>
+                  <tbody data-bind="foreach: vm.paymentList()">
+                  <tr>
+                    <td data-bind="text: $index() + 1">1</td>
+                    <td data-bind="text: $data.reports[0]?.direction_name"></td>
+                    <td data-bind="text: $data.reports[0]?.group_name"></td>
+                    <td data-bind="text: $data.key"></td>
+                    <td data-bind="text: $root.vm.getTotalPayment($data.reports)"></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+                <span class="font-medium-1">
+                  Balans
+                  <span class="pl-1" data-bind="visible: vm.payment.price">-</span>
+                  <strong data-bind="text: vm.payment.price"></strong>
+                </span>
+          </div>
+          <div class="offset-2 col-md-4">
+            <span class="font-weight-bold">Umumiy balans</span>
+            <span data-bind="text: vm.totalPayment()"></span>
+          </div>
+        </div>
+        <div class="row mb-4 ml-3">
+          <div class="col-md-2">
+            <button class="btn btn-primary" data-bind="click: vm.printPayment">Chop etish</button>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-light" data-bind="click: vm.addPayment">Saqlash</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
