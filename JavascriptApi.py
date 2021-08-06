@@ -1,6 +1,7 @@
 import logging
 import logging.config
 
+from PathResolver import resource_path
 from connections import Connection
 
 
@@ -18,7 +19,7 @@ class JavascriptApi:
         self.main_screen.resize(1200, 755)
 
     def logger(self, text):
-        logging.config.fileConfig(fname='logback.conf', disable_existing_loggers=False)
+        logging.config.fileConfig(fname=resource_path('conf/logback.conf'), disable_existing_loggers=False)
         logger = logging.getLogger(__name__)
         logger.debug(text)
 
