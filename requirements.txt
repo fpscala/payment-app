@@ -3,3 +3,6 @@ pywebview[qt]
 pywebview[cef]
 pyqtwebengine
 requests~=2.26.0
+pypiwin32
+pdfkit
+beautifulsoup4

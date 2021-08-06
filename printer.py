@@ -64,10 +64,14 @@ def UploadAction(event=None):
 def PrintAction(event=None):
     PRINTER_DEFAULTS = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
     pHandle = win32print.OpenPrinter(_printer.get(), PRINTER_DEFAULTS)
-    properties = win32print.GetPrinter(pHandle, 2)
-    properties['pDevMode'].Color = 1 if str(_color.get()) == "Color" else 2
-    properties['pDevMode'].Copies = 1
-    win32print.SetPrinter(pHandle, 2, properties, 0)
+    level = 2
+    properties = win32print.GetPrinter(pHandle, level)
+    pDevModeObj = properties["pDevMode"]
+    pDevModeObj.PaperSize = 0
+    pDevModeObj.PaperLength = 110  # SIZE IN 1/10 mm
+    pDevModeObj.PaperWidth = 80  # SIZE IN 1/10 mm
+    properties["pDevMode"] = pDevModeObj
+    win32print.SetPrinter(pHandle, level, properties, 0)
 
     if not _filename:
         messagebox.showerror("Error", "No File Selected")
@@ -80,8 +84,8 @@ def PrintAction(event=None):
         # win32print.SetDefaultPrinter(_printer.get())
         win32api.ShellExecute(0, "print", _filename, None, ".", 0)
         win32print.ClosePrinter(pHandle)
-    except:
-        pass
+    except Exception as ex:
+        print(ex)
         messagebox.showerror("Error", "There was an error printing the file :(")
 
 

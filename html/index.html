@@ -80,7 +80,7 @@
                 </div>
                 <div class="row mt-1 ml-1">
                   <label for="comment">Izohlar:</label>
-                  <textarea class="form-control" rows="2" type="text" id="comment" data-bind="value: vm.payment.comment"></textarea>
+                  <textarea class="form-control" rows="2" id="comment" data-bind="value: vm.payment.comment"></textarea>
                 </div>
               </div>
             </div>
@@ -99,13 +99,13 @@
                   </tr>
                   </thead>
                   <tbody data-bind="foreach: vm.paymentList()">
-                  <tr>
-                    <td data-bind="text: $index() + 1">1</td>
-                    <td data-bind="text: $data.reports[0]?.direction_name"></td>
-                    <td data-bind="text: $data.reports[0]?.group_name"></td>
-                    <td data-bind="text: $data.key"></td>
-                    <td data-bind="text: $root.vm.getTotalPayment($data.reports)"></td>
-                  </tr>
+                    <tr>
+                      <td data-bind="text: $index() + 1"></td>
+                      <td data-bind="text: $data.reports[0].direction_name"></td>
+                      <td data-bind="text: $data.reports[0].group_name"></td>
+                      <td data-bind="text: $data.key"></td>
+                      <td data-bind="text: $root.vm.getTotalPayment($data.reports)"></td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

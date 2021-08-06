@@ -16,7 +16,7 @@ class Connection:
         self.the_response = Response()
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
-        self.server_url = "http://localhost:9000/"
+        self.server_url = "http://192.162.1.17:9000/"
         self.host = 'crm.dataonline.uz'
         logging.config.fileConfig(fname=resource_path('conf/logback.conf'), disable_existing_loggers=False)
         self.logger = logging.getLogger(__name__)
