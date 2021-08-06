@@ -15,6 +15,7 @@ class Connection:
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
         self.server_url = "http://localhost:9000/"
+        self.host = 'crm.dataonline.uz'
         logging.config.fileConfig(fname='logback.conf', disable_existing_loggers=False)
         self.logger = logging.getLogger(__name__)
 
@@ -54,6 +55,28 @@ class Connection:
             self.logger.error(f"Error occurred while get student by group-id. Error: {ex}")
             return []
 
+    def getPaymentsByStudentId(self, studentId):
+        try:
+            response = requests.get(self.server_url + 'admin/get-payment-debt/' + studentId, headers=self.headers)
+            return json.loads(response.text)
+
+        except Exception as ex:
+            self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")
+            return []
+
+    def addPayment(self, data):
+        try:
+            headers = {
+                'Cookie': self.cookies,
+                'Content-Type': 'application/json'
+            }
+            response = requests.post(url=self.server_url + "admin/add-payment", data=json.dumps(data), headers=headers)
+            return json.loads(response.text)
+
+        except Exception as ex:
+            self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")
+            return "To'lovni ma'lumotlar bazasiga kiritishda xatolik yuz berdi!"
+
     def getLastPaymentId(self):
         try:
             response = requests.get(self.server_url + 'admin/get-last-payment-number', headers=self.headers)
@@ -75,13 +98,15 @@ class Connection:
         try:
             data = {'login': login, 'password': password}
             headers = {
-                'Host': 'crm.dataonline.uz',
+                'Host': self.host,
                 'Referer': self.server_url,
             }
             response = requests.post(url=self.server_url + "login", data=data, headers=headers, allow_redirects=False)
             self.cookies = response.headers['Set-Cookie']
             self.headers = {
-                'Cookie': self.cookies
+                'Cookie': self.cookies,
+                'Host': self.host,
+                'Referer': self.server_url
             }
             if response.headers['Location'] == '/admin/':
                 return self.checkAccessPayment()

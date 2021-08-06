@@ -37,6 +37,12 @@ class JavascriptApi:
     def get_students(self, groupId):
         return self.connection.getStudentByGroupId(str(groupId))
 
+    def get_payments(self, studentId):
+        return self.connection.getPaymentsByStudentId(str(studentId))
+
+    def add_payment(self, data):
+        return self.connection.addPayment(data)
+
     def check_user(self, login, password):
         result = self.connection.checkUser(login, password)
         self.logger(result.content)
@@ -44,4 +50,3 @@ class JavascriptApi:
             return result.content
         else:
             self.quit_login()
-            return {'code': 200, "success": "OK!"}

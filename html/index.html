@@ -9,13 +9,13 @@
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-select.min.css">
   <link rel="stylesheet" href="css/toastr.min.css">
-<!--  <script type='text/javascript' src='js/jquery.min.js'></script>-->
-<!--  <script type='text/javascript' src='js/knockout-min.js'></script>-->
-<!--  <script type='text/javascript' src='js/knockout.mapping-latest.js'></script>-->
-<!--  <script type='text/javascript' src='js/bootstrap-select.min.js'></script>-->
-<!--  <script type='text/javascript' src='js/moment.min.js'></script>-->
-<!--  <script type='text/javascript' src='js/toastr.min.js'></script>-->
-<!--  <script type='text/javascript' src='js/index.js'></script>-->
+  <script type='text/javascript' src='js/jquery.min.js'></script>
+  <script type='text/javascript' src='js/knockout-min.js'></script>
+  <script type='text/javascript' src='js/knockout.mapping-latest.js'></script>
+  <script type='text/javascript' src='js/bootstrap-select.min.js'></script>
+  <script type='text/javascript' src='js/moment.min.js'></script>
+  <script type='text/javascript' src='js/toastr.min.js'></script>
+  <script type='text/javascript' src='js/index.js'></script>
 </head>
 <body oncontextmenu="return false;">
 <div class="justify-content-center">
@@ -33,15 +33,15 @@
             <div class="form-group row ml-1">
               <label class="col-md-2">To'lov turi:</label>
               <label class="col-md-3">
-                <input class="col-md-2" type="radio" name="type" value="Naqd">
+                <input class="col-md-2" type="radio" name="type" value="Naqd" data-bind="checked: vm.payment.type">
                 Naqd
               </label>
               <label class="col-md-3">
-                <input class="col-md-2" type="radio" name="type" value="Plastik">
+                <input class="col-md-2" type="radio" name="type" value="Plastik" data-bind="checked: vm.payment.type">
                 Plastik
               </label>
               <label class="col-md-3">
-                <input class="col-md-2" type="radio" name="type" value="Hisob raqam">
+                <input class="col-md-2" type="radio" name="type" value="Hisob raqam" data-bind="checked: vm.payment.type">
                 Hisob raqam
               </label>
             </div>
@@ -63,14 +63,15 @@
                   </select>
                   <label for="group" class="col-md-2 col-form-label">Guruh:</label>
                   <select class="form-control bg-white col-md-4" id="group" autocomplete="off"
-                    data-bind="options: vm.groupsList, optionsText: 'name', optionsValue: 'id', value: vm.payment.groupId">
+                    data-bind="options: vm.groupsList, optionsText: 'name', optionsValue: 'id',
+                     value: vm.payment.groupId, optionsCaption: 'Guruhni tanlang'">
                   </select>
                 </div>
                 <div class="row mt-1 ml-1">
                   <label for="studentName" class="col-form-label">O'quvchi:</label>
                   <select class="form-control bg-white" id="studentName" autocomplete="off"
                     data-bind="options: vm.studentsList, optionsText: 'fullname', optionsValue: 'id',
-                    value: vm.payment.studentId">
+                    value: vm.payment.studentId, optionsCaption: 'O\'quvchini tanlang'">
                   </select>
                 </div>
                 <div class="row mt-1 ml-1">

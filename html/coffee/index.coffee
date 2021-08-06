@@ -1,5 +1,7 @@
 $ ->
-  Api = pywebview.api
+  Api = ''
+  window.addEventListener 'pywebviewready', ->
+    Api = pywebview.api
   
   defaultPayment =
     id: 0
@@ -21,14 +23,9 @@ $ ->
     groupsList: []
     paymentList: []
     studentsList: []
-    teachersList: []
-    allGroupsList: []
     directionsList: []
     totalPayment: 0
     list: [1..9]
-    login: ''
-    password: ''
-
 
   convertIntToDateTime = (intDate) ->
     if intDate
@@ -42,20 +39,6 @@ $ ->
       i += 1
     -1
 
-  vm.onSubmit = ->
-    toastr.clear()
-    if !vm.login()
-      toastr.error("Iltimos guruh ochilgan vaqtni kiriting!")
-      return no
-    else if !vm.password()
-      toastr.error("Iltimos guruh nomini kiriting!")
-      return no
-    else
-      Api.check_user(vm.login(), vm.password()).then (response) ->
-        Api.logger(response)
-        if response.code is 401
-          toastr.error(response.error)
-
   vm.currentDateTime(convertIntToDateTime(new Date()))
   setInterval ->
     vm.currentDateTime(convertIntToDateTime(new Date()))
@@ -65,50 +48,79 @@ $ ->
     getAllDirections()
   , 1000
 
-  getAllGroups = ->
-    Api.get_groups().then (response) ->
-      Api.logger(response)
-      vm.allGroupsList(response)
+  getAllGroups = (id) ->
+    if id
+      Api.get_groups().then (response) ->
+        vm.groupsList(response.filter (e) -> e.direction_id == id)
 
-  getAllTeachers = ->
-    Api.get_teachers().then (response) ->
-      Api.logger(response)
-      vm.teachersList(response)
+  getAllTeachers = (teacherId) ->
+    if teacherId
+      Api.get_teachers().then (response) ->
+        tIndex = indexOfByObject(response, 'id', teacherId)
+        vm.payment.teacherName(response[tIndex]?.name)
 
   getLastPaymentId = ->
     Api.get_last_payment_id().then (response) ->
-      Api.logger(response)
       vm.payment.id(response)
 
   getAllDirections = ->
     Api.get_directions().then (response) ->
-      Api.logger(response)
       vm.directionsList(response)
-      getAllGroups().then ->
-        getLastPaymentId().then ->
-          getAllTeachers()
+      getLastPaymentId()
 
   vm.payment.directionId.subscribe (id) ->
-    vm.groupsList(vm.allGroupsList().filter (e) -> e.direction_id == id)
+    if id
+      getAllGroups(id)
 
   vm.payment.groupId.subscribe (id) ->
     if id
       Api.get_students(id).then (response) ->
-        Api.logger(response)
+        vm.studentsList.removeAll()
         for student in response
           student.fullname = student.firstname + " " + student.lastname
           vm.studentsList.push(student)
         index = indexOfByObject(vm.groupsList(), 'id', id)
         teacherId = vm.groupsList()[index]?.teacher_id
-        tIndex = indexOfByObject(vm.teachersList(), 'id', teacherId)
-        vm.payment.teacherName(vm.teachersList()[tIndex]?.name)
+        getAllTeachers(teacherId)
 
   vm.payment.studentId.subscribe (id) ->
     if id
-      Api.get_students(id).then (response) ->
-        Api.logger(response)
+      Api.get_payments(id).then (response) ->
         vm.paymentList(response)
         index = indexOfByObject(vm.studentsList(), 'id', id)
         vm.payment.studentFullName(vm.studentsList()[index]?.fullname)
+
+  vm.getTotalPayment = (reports) ->
+    sum = 0
+    for report in reports
+      sum += report.debt
+    vm.totalPayment(vm.totalPayment() + sum)
+    sum - reports[0].price_group
+
+  vm.addPayment = ->
+    toastr.clear()
+    if !vm.payment.id()
+      toastr.error("Iltimos chek raqamini kiriting!")
+      return no
+    else if !vm.payment.type()
+      toastr.error("Iltimos to'lov turini kiriting!")
+      return no
+    else if !vm.payment.price()
+      toastr.error("Iltimos summani kiriting!")
+      return no
+    else if !vm.payment.month()
+      toastr.error("Iltimos qaysi oy uchun to'lamoqchiligingizni kiriting!")
+      return no
+    else if !vm.payment.groupId()
+      toastr.error("Iltimos guruhni tanlang!")
+      return no
+    else
+      data = ko.mapping.toJS(vm.payment)
+      data.id = parseInt(data.id)
+      Api.add_payment(data).then (response) ->
+        ko.mapping.fromJS(defaultPayment, {}, vm.payment)
+        vm.paymentList.removeAll()
+        toastr.success(response)
+        getLastPaymentId()
 
   ko.applyBindings {vm}
