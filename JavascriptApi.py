@@ -1,8 +1,15 @@
+import json
 import logging
 import logging.config
+from collections import namedtuple
 
 from PathResolver import resource_path
+from RenderPdf import generate_pdf
 from connections import Connection
+
+
+def custom_payment_decoder(payment_dict):
+    return namedtuple('Payment', payment_dict.keys())(*payment_dict.values())
 
 
 class JavascriptApi:
@@ -35,13 +42,18 @@ class JavascriptApi:
     def get_teachers(self):
         return self.connection.getTeachers()
 
-    def get_students(self, groupId):
-        return self.connection.getStudentByGroupId(str(groupId))
+    def get_students(self, group_id):
+        return self.connection.getStudentByGroupId(str(group_id))
 
-    def get_payments(self, studentId):
-        return self.connection.getPaymentsByStudentId(str(studentId))
+    def get_payments(self, student_id):
+        return self.connection.getPaymentsByStudentId(str(student_id))
 
     def add_payment(self, data):
+        return self.connection.addPayment(json.dumps(data))
+
+    def print_payment(self, data):
+        payment = json.loads(json.dumps(data), object_hook=custom_payment_decoder)
+        generate_pdf(payment)
         return self.connection.addPayment(data)
 
     def check_user(self, login, password):

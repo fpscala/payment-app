@@ -123,4 +123,30 @@ $ ->
         toastr.success(response)
         getLastPaymentId()
 
+  vm.printPayment = ->
+    toastr.clear()
+    if !vm.payment.id()
+      toastr.error("Iltimos chek raqamini kiriting!")
+      return no
+    else if !vm.payment.type()
+      toastr.error("Iltimos to'lov turini kiriting!")
+      return no
+    else if !vm.payment.price()
+      toastr.error("Iltimos summani kiriting!")
+      return no
+    else if !vm.payment.month()
+      toastr.error("Iltimos qaysi oy uchun to'lamoqchiligingizni kiriting!")
+      return no
+    else if !vm.payment.groupId()
+      toastr.error("Iltimos guruhni tanlang!")
+      return no
+    else
+      data = ko.mapping.toJS(vm.payment)
+      data.id = parseInt(data.id)
+      Api.print_payment(data).then (response) ->
+        ko.mapping.fromJS(defaultPayment, {}, vm.payment)
+        vm.paymentList.removeAll()
+        toastr.success(response)
+        getLastPaymentId()
+
   ko.applyBindings {vm}

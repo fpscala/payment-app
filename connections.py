@@ -72,7 +72,7 @@ class Connection:
                 'Cookie': self.cookies,
                 'Content-Type': 'application/json'
             }
-            response = requests.post(url=self.server_url + "admin/add-payment", data=json.dumps(data), headers=headers)
+            response = requests.post(url=self.server_url + "admin/add-payment", data=data, headers=headers)
             return json.loads(response.text)
 
         except Exception as ex:
