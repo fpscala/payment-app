@@ -5,8 +5,6 @@ import logging.config
 import requests
 from requests import Response
 
-from PathResolver import resource_path
-
 
 class Connection:
 

@@ -28,11 +28,13 @@ def generate_pdf(payment):
         logo = resource_path('html/img/data-logo.png')
         css = resource_path('html/css/print.css')
         for img in soup.find_all('img'):
-            img[
-                'src'] = f"data:image/png;base64, {get_image_file_as_base64_data(logo).decode('utf-8')}"
+            img['src'] = f"data:image/png;base64, {get_image_file_as_base64_data(logo).decode('utf-8')}"
 
         for td in soup.find_all('td', {'class': 'student'}):
             td.string = payment.studentFullName
+
+        for td in soup.find_all('td', {'class': 'number'}):
+            td.string = str(payment.id)
 
         for td in soup.find_all('td', {'class': 'price'}):
             td.string = payment.price
@@ -41,7 +43,7 @@ def generate_pdf(payment):
             td.string = payment.type
 
         for td in soup.find_all('td', {'class': 'debt'}):
-            td.string = payment.debt
+            td.string = str(payment.debt)
 
         for td in soup.find_all('td', {'class': 'date'}):
             td.string = date_time.strftime("%d-%m-%Y")
@@ -66,6 +68,7 @@ def generate_pdf(payment):
         }
         pdfkit.from_string(str(soup), filename, options=options)
     except Exception as ex:
+        print(f'Error occurred while generate pdf. Error: {ex}')
         logger.error(f'Error occurred while generate pdf. Error: {ex}')
 
 
@@ -81,10 +84,14 @@ def print_action():
     p_dev_mode.PaperWidth = 80  # SIZE IN 1/10 mm
     properties["pDevMode"] = p_dev_mode
     win32print.SetPrinter(pHandle, level, properties, 0)
-
+    logger.debug(f'Default printer selected: {printer}')
+    logger.debug(f'File path: {filename}')
+    print(f'Default printer selected: {printer}')
+    print(f'File path: {filename}')
     try:
         win32api.ShellExecute(0, "print", filename, '"%s"' % printer, ".", 0)
         win32print.ClosePrinter(pHandle)
     except Exception as ex:
+        print(f'Error occurred while print cheque. Error: {ex}')
         logger.error(f'Error occurred while print cheque. Error: {ex}')
         return f"Printer bilan bog'liq muammo yuzaga keldi, Error: {ex}"

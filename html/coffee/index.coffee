@@ -144,8 +144,8 @@ $ ->
         if response.code is 200
           ko.mapping.fromJS(defaultPayment, {}, vm.payment)
           vm.paymentList.removeAll()
-          toastr.success(response.text)
           getLastPaymentId()
+          toastr.success(response.text)
         else
           toastr.error(response.error)
 
@@ -179,8 +179,8 @@ $ ->
           ko.mapping.fromJS(defaultPayment, {}, vm.payment)
           vm.paymentList.removeAll()
           getLastPaymentId()
-          Api.print_payment()
           toastr.success(response.text)
+          Api.print_payment()
         else
           toastr.error(response.error)
 
