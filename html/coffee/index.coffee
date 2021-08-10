@@ -5,13 +5,13 @@ $ ->
   
   defaultPayment =
     id: 0
-    price: ''
-    comments: ''
     type: ''
+    debt: ''
+    price: ''
     month: ''
     groupId: ''
+    comments: ''
     studentId: ''
-    teacherId: ''
     directionId: ''
     groupName: ''
     teacherName: ''
@@ -97,6 +97,24 @@ $ ->
     vm.totalPayment(vm.totalPayment() + sum)
     sum - reports[0].price_group
 
+  getGroupName = (groupId) ->
+    index = indexOfByObject(vm.groupsList(), 'id', groupId)
+    vm.groupsList()[index]?.name
+
+  getDebtPayment = ->
+    sum = 0
+    index = indexOfByObject(vm.paymentList(), "key", vm.payment.month())
+    reports = vm.paymentList()[index]?.reports
+    if reports
+      for report in reports
+        if month is report.payment_month
+          sum += report.debt
+      sum + (+vm.payment.price()) - reports[0].price_group
+    else
+      index = indexOfByObject(vm.groupsList(), "id", vm.payment.groupId())
+      priceGroup = vm.groupsList()[index]?.price_group
+      vm.payment.price() - priceGroup
+
   vm.addPayment = ->
     toastr.clear()
     if !vm.payment.id()
@@ -108,6 +126,9 @@ $ ->
     else if !vm.payment.price()
       toastr.error("Iltimos summani kiriting!")
       return no
+    else if !vm.payment.studentId()
+      toastr.error("Iltimos talabani tanlang!")
+      return no
     else if !vm.payment.month()
       toastr.error("Iltimos qaysi oy uchun to'lamoqchiligingizni kiriting!")
       return no
@@ -117,11 +138,16 @@ $ ->
     else
       data = ko.mapping.toJS(vm.payment)
       data.id = parseInt(data.id)
+      data.debt = getDebtPayment()
+      data.groupName = getGroupName(vm.payment.groupId())
       Api.add_payment(data).then (response) ->
-        ko.mapping.fromJS(defaultPayment, {}, vm.payment)
-        vm.paymentList.removeAll()
-        toastr.success(response)
-        getLastPaymentId()
+        if response.code is 200
+          ko.mapping.fromJS(defaultPayment, {}, vm.payment)
+          vm.paymentList.removeAll()
+          toastr.success(response.text)
+          getLastPaymentId()
+        else
+          toastr.error(response.error)
 
   vm.printPayment = ->
     toastr.clear()
@@ -134,6 +160,9 @@ $ ->
     else if !vm.payment.price()
       toastr.error("Iltimos summani kiriting!")
       return no
+    else if !vm.payment.studentId()
+      toastr.error("Iltimos talabani tanlang!")
+      return no
     else if !vm.payment.month()
       toastr.error("Iltimos qaysi oy uchun to'lamoqchiligingizni kiriting!")
       return no
@@ -143,10 +172,16 @@ $ ->
     else
       data = ko.mapping.toJS(vm.payment)
       data.id = parseInt(data.id)
-      Api.print_payment(data).then (response) ->
-        ko.mapping.fromJS(defaultPayment, {}, vm.payment)
-        vm.paymentList.removeAll()
-        toastr.success(response)
-        getLastPaymentId()
+      data.debt = getDebtPayment()
+      data.groupName = getGroupName(vm.payment.groupId())
+      Api.generate_cheque(data).then (response) ->
+        if response.code is 200
+          ko.mapping.fromJS(defaultPayment, {}, vm.payment)
+          vm.paymentList.removeAll()
+          getLastPaymentId()
+          Api.print_payment()
+          toastr.success(response.text)
+        else
+          toastr.error(response.error)
 
   ko.applyBindings {vm}

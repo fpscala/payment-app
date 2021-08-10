@@ -18,7 +18,8 @@ class Connection:
         self.the_response.status_code = 401
         self.server_url = "http://192.162.1.17:9000/"
         self.host = 'crm.dataonline.uz'
-        logging.config.fileConfig(fname=resource_path('conf/logback.conf'), disable_existing_loggers=False)
+        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
+                            filename='logs.log')
         self.logger = logging.getLogger(__name__)
 
     def getDirections(self):
@@ -50,7 +51,7 @@ class Connection:
 
     def getStudentByGroupId(self, groupId):
         try:
-            response = requests.get(self.server_url + 'admin/attendance-students/' + groupId, headers=self.headers)
+            response = requests.get(self.server_url + 'admin/students/' + groupId, headers=self.headers)
             return json.loads(response.text)
 
         except Exception as ex:
@@ -72,12 +73,26 @@ class Connection:
                 'Cookie': self.cookies,
                 'Content-Type': 'application/json'
             }
+            print(data)
             response = requests.post(url=self.server_url + "admin/add-payment", data=data, headers=headers)
-            return json.loads(response.text)
+            self.logger.debug(response)
+            self.logger.debug(response.text)
+            if response.status_code == 200:
+                self.the_response._content = {
+                    'code': 200, "text": response.text
+                }
+            else:
+                self.the_response._content = {
+                    'code': response.status_code, "error": response.text
+                }
+            return self.the_response.content
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")
-            return "To'lovni ma'lumotlar bazasiga kiritishda xatolik yuz berdi!"
+            self.the_response._content = {
+                'code': 400, "error": "To'lovni ma'lumotlar bazasiga kiritishda xatolik yuz berdi!"
+            }
+            return self.the_response.content
 
     def getLastPaymentId(self):
         try:

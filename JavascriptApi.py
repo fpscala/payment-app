@@ -4,7 +4,7 @@ import logging.config
 from collections import namedtuple
 
 from PathResolver import resource_path
-from RenderPdf import generate_pdf
+from RenderPdf import generate_pdf, print_action
 from connections import Connection
 
 
@@ -26,7 +26,8 @@ class JavascriptApi:
         self.main_screen.resize(1200, 755)
 
     def logger(self, text):
-        logging.config.fileConfig(fname=resource_path('conf/logback.conf'), disable_existing_loggers=False)
+        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
+                            filename='logs.log')
         logger = logging.getLogger(__name__)
         logger.debug(text)
 
@@ -51,10 +52,14 @@ class JavascriptApi:
     def add_payment(self, data):
         return self.connection.addPayment(json.dumps(data))
 
-    def print_payment(self, data):
-        payment = json.loads(json.dumps(data), object_hook=custom_payment_decoder)
+    def print_payment(self):
+        return print_action()
+
+    def generate_cheque(self, data):
+        json_data = json.dumps(data)
+        payment = json.loads(json_data, object_hook=custom_payment_decoder)
         generate_pdf(payment)
-        return self.connection.addPayment(data)
+        return self.connection.addPayment(json_data)
 
     def check_user(self, login, password):
         result = self.connection.checkUser(login, password)

@@ -1,3 +1,4 @@
+cefpython3==66.1
 pywebview~=3.5
 pywebview[qt]
 pywebview[cef]

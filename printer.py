@@ -79,10 +79,11 @@ def PrintAction(event=None):
     elif not _printer.get():
         messagebox.showerror("Error", "No Printer Selected")
         return
-
+    print(_printer.get())
+    print(_filename)
     try:
         # win32print.SetDefaultPrinter(_printer.get())
-        win32api.ShellExecute(0, "print", _filename, None, ".", 0)
+        win32api.ShellExecute(0, "print", _filename, '"%s"' % _printer.get(), ".", 0)
         win32print.ClosePrinter(pHandle)
     except Exception as ex:
         print(ex)
