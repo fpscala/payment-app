@@ -3,8 +3,8 @@ import logging.config
 from datetime import datetime
 
 import pdfkit
-import win32api
-import win32print
+# import win32api
+# import win32print
 from bs4 import BeautifulSoup
 
 from PathResolver import resource_path
@@ -72,26 +72,28 @@ def generate_pdf(payment):
         logger.error(f'Error occurred while generate pdf. Error: {ex}')
 
 
-def print_action():
-    printer = win32print.GetDefaultPrinter()
-    PRINTER_DEFAULTS = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
-    pHandle = win32print.OpenPrinter(printer, PRINTER_DEFAULTS)
-    level = 2
-    properties = win32print.GetPrinter(pHandle, level)
-    p_dev_mode = properties["pDevMode"]
-    p_dev_mode.PaperSize = 0
-    p_dev_mode.PaperLength = 110  # SIZE IN 1/10 mm
-    p_dev_mode.PaperWidth = 80  # SIZE IN 1/10 mm
-    properties["pDevMode"] = p_dev_mode
-    win32print.SetPrinter(pHandle, level, properties, 0)
-    logger.debug(f'Default printer selected: {printer}')
-    logger.debug(f'File path: {filename}')
-    print(f'Default printer selected: {printer}')
-    print(f'File path: {filename}')
-    try:
-        win32api.ShellExecute(0, "print", filename, '"%s"' % printer, ".", 0)
-        win32print.ClosePrinter(pHandle)
-    except Exception as ex:
-        print(f'Error occurred while print cheque. Error: {ex}')
-        logger.error(f'Error occurred while print cheque. Error: {ex}')
-        return f"Printer bilan bog'liq muammo yuzaga keldi, Error: {ex}"
+# def print_action():
+#     printer = win32print.GetDefaultPrinter()
+#     PRINTER_DEFAULTS = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
+#     pHandle = win32print.OpenPrinter(printer, PRINTER_DEFAULTS)
+#     level = 2
+#     properties = win32print.GetPrinter(pHandle, level)
+#     p_dev_mode = properties["pDevMode"]
+#     p_dev_mode.PaperSize = 0
+#     p_dev_mode.PaperLength = 110  # SIZE IN 1/10 mm
+#     p_dev_mode.PaperWidth = 80  # SIZE IN 1/10 mm
+#     properties["pDevMode"] = p_dev_mode
+#     win32print.SetPrinter(pHandle, level, properties, 0)
+#     logger.debug(f'Default printer selected: {printer}')
+#     logger.debug(f'File path: {filename}')
+#     print(f'Default printer selected: {printer}')
+#     print(f'File path: {filename}')
+#     try:
+#         win32api.ShellExecute(0, "print", filename, '"%s"' % printer, ".", 0)
+#         win32print.ClosePrinter(pHandle)
+#     except Exception as ex:
+#         print(f'Error occurred while print cheque. Error: {ex}')
+#         logger.error(f'Error occurred while print cheque. Error: {ex}')
+#         return f"Printer bilan bog'liq muammo yuzaga keldi, Error: {ex}"
+
+

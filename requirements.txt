@@ -5,5 +5,7 @@ pywebview[cef]
 pyqtwebengine
 requests~=2.26.0
 pypiwin32
-pdfkit
-beautifulsoup4
+pdfkit~=0.6.1
+beautifulsoup4~=4.9.3
+AwesomeTkinter~=2021.7.25
+PyQt5~=5.15.4

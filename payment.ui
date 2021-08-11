@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Payment</class>
+ <widget class="QDialog" name="Payment">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1006</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Payment</string>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>14</x>
+     <y>11</y>
+     <width>981</width>
+     <height>542</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="horizontalSpacing">
+     <number>20</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>6</number>
+    </property>
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="horizontalSpacing">
+       <number>10</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>15</number>
+      </property>
+      <item row="1" column="0">
+       <widget class="QLabel" name="type_label">
+        <property name="text">
+         <string>To'lov turi:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QComboBox" name="month"/>
+      </item>
+      <item row="5" column="3">
+       <widget class="QComboBox" name="group"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="comment_label">
+        <property name="text">
+         <string>Izohlar:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="direction_label">
+        <property name="text">
+         <string>Kurs:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="month_label">
+        <property name="text">
+         <string>Oy:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="teacher_label">
+        <property name="text">
+         <string>O'qituvchi:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="naqd">
+        <property name="text">
+         <string>Naqd</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="price_label">
+        <property name="text">
+         <string>Summa:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLabel" name="balance">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1" colspan="3">
+       <widget class="QPlainTextEdit" name="comment"/>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="group_label">
+        <property name="text">
+         <string>Guruh:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="date">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="direction"/>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="student_label">
+        <property name="text">
+         <string>O'quvchi:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="balance_label">
+        <property name="text">
+         <string>Balans:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="date_label">
+        <property name="text">
+         <string>Sana:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="price"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="id_label">
+        <property name="text">
+         <string>№</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QRadioButton" name="plastik">
+        <property name="text">
+         <string>Plastik</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QRadioButton" name="hisob_raqam">
+        <property name="text">
+         <string>Hisob raqam</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="id"/>
+      </item>
+      <item row="6" column="1" colspan="3">
+       <widget class="QComboBox" name="student"/>
+      </item>
+      <item row="7" column="1" colspan="3">
+       <widget class="QLineEdit" name="teacher"/>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <layout class="QGridLayout" name="gridLayout_2" rowstretch="5,0">
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>15</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="payment_table">
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>№</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Kurs</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Guruh</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Oy</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Qarz</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1" columnminimumwidth="0,1">
+        <property name="horizontalSpacing">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="total_price_label">
+          <property name="text">
+           <string>Umumiy balans:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="total_price">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>760</x>
+     <y>550</y>
+     <width>231</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <property name="spacing">
+     <number>10</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="print_btn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(64, 77, 191);
+color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>Chop qilish</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="save_bnt">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(115, 210, 22);</string>
+      </property>
+      <property name="text">
+       <string>Saqlash</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

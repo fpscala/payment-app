@@ -3,8 +3,7 @@ import logging
 import logging.config
 from collections import namedtuple
 
-from PathResolver import resource_path
-from RenderPdf import generate_pdf, print_action
+from RenderPdf import generate_pdf
 from connections import Connection
 
 
@@ -53,7 +52,7 @@ class JavascriptApi:
         return self.connection.addPayment(json.dumps(data))
 
     def print_payment(self):
-        return print_action()
+        pass
 
     def generate_cheque(self, data):
         json_data = json.dumps(data)
