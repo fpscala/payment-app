@@ -14,7 +14,7 @@ class Connection:
         self.the_response = Response()
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
-        self.server_url = "http://192.162.1.17:9000/"
+        self.server_url = "http://localhost:9000/"
         self.host = 'crm.dataonline.uz'
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
                             filename='logs.log')
@@ -95,11 +95,11 @@ class Connection:
     def getLastPaymentId(self):
         try:
             response = requests.get(self.server_url + 'admin/get-last-payment-number', headers=self.headers)
-            return json.loads(response.text)
+            return response.text
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get student by group-id. Error: {ex}")
-            return []
+            return ""
 
     def checkAccessPayment(self):
         try:
