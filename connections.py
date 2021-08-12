@@ -1,9 +1,22 @@
 import json
 import logging
 import logging.config
+from collections import namedtuple
 
 import requests
 from requests import Response
+
+
+def direction_decoder(direction_dict):
+    return namedtuple('Direction', direction_dict.keys())(*direction_dict.values())
+
+
+def group_decoder(group_dict):
+    return namedtuple('Group', group_dict.keys())(*group_dict.values())
+
+
+def student_decoder(student_dict):
+    return namedtuple('Student', student_dict.keys())(*student_dict.values())
 
 
 class Connection:
@@ -23,7 +36,7 @@ class Connection:
     def getDirections(self):
         try:
             response = requests.get(self.server_url + "admin/get-all-directions", headers=self.headers)
-            return json.loads(response.text)
+            return json.loads(response.text, object_hook=direction_decoder)
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get direction. Error: {ex}")
@@ -32,7 +45,7 @@ class Connection:
     def getGroups(self):
         try:
             response = requests.get(self.server_url + 'admin/get-all-groups', headers=self.headers)
-            return json.loads(response.text)
+            return json.loads(response.text, object_hook=group_decoder)
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get groups. Error: {ex}")
@@ -49,8 +62,8 @@ class Connection:
 
     def getStudentByGroupId(self, groupId):
         try:
-            response = requests.get(self.server_url + 'admin/students/' + groupId, headers=self.headers)
-            return json.loads(response.text)
+            response = requests.get(self.server_url + 'admin/students/' + str(groupId), headers=self.headers)
+            return json.loads(response.text, object_hook=student_decoder)
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get student by group-id. Error: {ex}")
@@ -71,7 +84,6 @@ class Connection:
                 'Cookie': self.cookies,
                 'Content-Type': 'application/json'
             }
-            print(data)
             response = requests.post(url=self.server_url + "admin/add-payment", data=data, headers=headers)
             self.logger.debug(response)
             self.logger.debug(response.text)
@@ -126,13 +138,10 @@ class Connection:
             if response.headers['Location'] == '/admin/':
                 return self.checkAccessPayment()
             else:
-                self.the_response._content = {'code': 401,
-                                              "error": "Sizning to'lov tizimiga kirish uchun huquqingiz yo'q!"}
+                self.the_response._content = "Sizning to'lov tizimiga kirish uchun huquqingiz yo'q!"
                 return self.the_response
 
         except Exception as ex:
             self.logger.error(f"Error occurred while authentication. Error: {ex}")
-            self.the_response._content = {
-                'code': 401, "error": "Login yoki parol noto'g'ri kiritildi iltimos tekshirib qaytadan kiriting!"
-            }
+            self.the_response._content = "Login yoki parol noto'g'ri kiritildi iltimos tekshirib qaytadan kiriting!"
             return self.the_response

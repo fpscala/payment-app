@@ -10,20 +10,18 @@
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QTimer, QDateTime
+from PyQt5.QtWidgets import QMainWindow
 
-from connections import Connection
 
-
-class Ui_Payment(object):
-    def setupUi(self, Payment):
-        self.api = Connection()
-        Payment.setObjectName("Payment")
-        Payment.resize(1006, 580)
-        Payment.setModal(False)
-        self.layoutWidget = QtWidgets.QWidget(Payment)
+class Ui_Payment(QMainWindow):
+    def setupUi(self, connection):
+        self.setObjectName("Payment")
+        self.resize(1006, 580)
+        self.api = connection
+        self.layoutWidget = QtWidgets.QWidget(self)
         self.layoutWidget.setGeometry(QtCore.QRect(14, 11, 981, 542))
         self.layoutWidget.setObjectName("layoutWidget")
-        self.layoutWidget1 = QtWidgets.QWidget(Payment)
+        self.layoutWidget1 = QtWidgets.QWidget(self)
         self.layoutWidget1.setEnabled(True)
         self.layoutWidget1.setGeometry(QtCore.QRect(760, 550, 231, 27))
         self.layoutWidget1.setObjectName("layoutWidget1")
@@ -165,12 +163,12 @@ class Ui_Payment(object):
         self.save_bnt.setObjectName("save_bnt")
         self.horizontalLayout_2.addWidget(self.save_bnt)
 
-        self.retranslateUi(Payment)
-        QtCore.QMetaObject.connectSlotsByName(Payment)
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self, Payment):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        Payment.setWindowTitle(_translate("Payment", "Payment"))
+        self.setWindowTitle(_translate("Payment", "Payment"))
         self.type_label.setText(_translate("Payment", "To\'lov turi:"))
         self.comment_label.setText(_translate("Payment", "Izohlar:"))
         self.direction_label.setText(_translate("Payment", "Kurs:"))
@@ -203,19 +201,42 @@ class Ui_Payment(object):
         self.timer.timeout.connect(self.show_time)
         self.timer.start(1000)
         self.id.setText(self.api.getLastPaymentId())
+        self.month.addItems([str(x) for x in range(1, 10)])
+        self.set_directions()
+        self.direction_id = self.direction.currentData()
+        self.direction.currentIndexChanged.connect(self.on_change_direction)
+        self.set_groups()
+        self.group_id = self.group.currentData()
+        self.group.currentIndexChanged.connect(self.on_change_group)
+        self.set_students(self.group_id)
+
+
+    def on_change_direction(self, index):
+        self.direction_id = self.direction.itemData(index)
+        self.set_groups()
+
+    def on_change_group(self, index):
+        self.group_id = self.group.itemData(index)
+        self.set_students(self.group_id)
+
+    def set_directions(self):
+        for direction in self.api.getDirections():
+            self.direction.addItem(direction.name, direction.id)
+
+    def set_groups(self):
+        groups = self.api.getGroups()
+        self.group.clear()
+        direction_groups = filter(lambda g: g.direction_id == self.direction_id, groups)
+        for group in direction_groups:
+            self.group.addItem(group.name, group.id)
+
+    def set_students(self, group_id):
+        students = self.api.getStudentByGroupId(group_id)
+        self.student.clear()
+        for student in students:
+            self.student.addItem(student.firstname + " " + student.lastname, student.id)
 
     def show_time(self):
         time = QDateTime.currentDateTime()
         time_display = time.toString('yyyy.MM.dd hh:mm:ss')
         self.date.setText(time_display)
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    Payment = QtWidgets.QDialog()
-    ui = Ui_Payment()
-    ui.setupUi(Payment)
-    Payment.show()
-    sys.exit(app.exec_())

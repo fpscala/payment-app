@@ -25,9 +25,11 @@
      <height>380</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <property name="styleSheet">
     <string notr="true">  background: #f39c12;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 5px;</string>
    </property>
    <property name="frameShape">
@@ -65,10 +67,18 @@ background: #60a3bc;</string>
       <height>51</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255);
 border-bottom-left-radius: 0;
 border-top-left-radius: 0;</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="user_icon">
@@ -116,10 +126,18 @@ border-bottom-right-radius: 0;</string>
       <height>51</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255);
 border-bottom-left-radius: 0;
 border-top-left-radius: 0;</string>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -136,9 +154,22 @@ border-top-left-radius: 0;</string>
       <pointsize>22</pointsize>
      </font>
     </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(204, 0, 0);
-color: #ffffff;</string>
+     <string notr="true">QPushButton {background-color: rgb(204, 0, 0);
+color: #ffffff;
+}
+QPushButton:hover {background-color: rgb(190, 0, 0);
+color: #ffffff;
+}
+QPushButton:pressed {background-color: rgb(150, 0, 0);
+color: #ffffff;
+}</string>
     </property>
     <property name="text">
      <string>Kirish</string>
