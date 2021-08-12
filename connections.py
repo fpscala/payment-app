@@ -19,6 +19,14 @@ def student_decoder(student_dict):
     return namedtuple('Student', student_dict.keys())(*student_dict.values())
 
 
+def teacher_decoder(teacher_dict):
+    return namedtuple('Teacher', teacher_dict.keys())(*teacher_dict.values())
+
+
+def payment_decoder(payment_dict):
+    return namedtuple('Payment', payment_dict.keys())(*payment_dict.values())
+
+
 class Connection:
 
     def __init__(self):
@@ -54,7 +62,7 @@ class Connection:
     def getTeachers(self):
         try:
             response = requests.get(self.server_url + 'admin/get-teachers', headers=self.headers)
-            return json.loads(response.text)
+            return json.loads(response.text, object_hook=teacher_decoder)
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get teachers. Error: {ex}")
@@ -71,8 +79,8 @@ class Connection:
 
     def getPaymentsByStudentId(self, studentId):
         try:
-            response = requests.get(self.server_url + 'admin/get-payment-debt/' + studentId, headers=self.headers)
-            return json.loads(response.text)
+            response = requests.get(self.server_url + 'admin/get-payment-debt/' + str(studentId), headers=self.headers)
+            return json.loads(response.text, object_hook=payment_decoder)
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")

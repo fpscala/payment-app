@@ -10,7 +10,7 @@
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QTimer, QDateTime
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 
 
 class Ui_Payment(QMainWindow):
@@ -115,8 +115,13 @@ class Ui_Payment(QMainWindow):
         self.payment_table = QtWidgets.QTableWidget(self.layoutWidget)
         self.payment_table.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.payment_table.setObjectName("payment_table")
-        self.payment_table.setColumnCount(5)
+        self.payment_table.setColumnCount(4)
         self.payment_table.setRowCount(1)
+        header = self.payment_table.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         item = QtWidgets.QTableWidgetItem()
         self.payment_table.setVerticalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
@@ -128,7 +133,6 @@ class Ui_Payment(QMainWindow):
         item = QtWidgets.QTableWidgetItem()
         self.payment_table.setHorizontalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
-        self.payment_table.setHorizontalHeaderItem(4, item)
         self.gridLayout_2.addWidget(self.payment_table, 0, 0, 1, 1)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setHorizontalSpacing(20)
@@ -184,15 +188,15 @@ class Ui_Payment(QMainWindow):
         self.id_label.setText(_translate("Payment", "№"))
         self.plastik.setText(_translate("Payment", "Plastik"))
         self.hisob_raqam.setText(_translate("Payment", "Hisob raqam"))
+        item = self.payment_table.verticalHeaderItem(0)
+        item.setText(_translate("Payment", "1"))
         item = self.payment_table.horizontalHeaderItem(0)
-        item.setText(_translate("Payment", "№"))
-        item = self.payment_table.horizontalHeaderItem(1)
         item.setText(_translate("Payment", "Kurs"))
-        item = self.payment_table.horizontalHeaderItem(2)
+        item = self.payment_table.horizontalHeaderItem(1)
         item.setText(_translate("Payment", "Guruh"))
-        item = self.payment_table.horizontalHeaderItem(3)
+        item = self.payment_table.horizontalHeaderItem(2)
         item.setText(_translate("Payment", "Oy"))
-        item = self.payment_table.horizontalHeaderItem(4)
+        item = self.payment_table.horizontalHeaderItem(3)
         item.setText(_translate("Payment", "Qarz"))
         self.total_price_label.setText(_translate("Payment", "Umumiy balans:"))
         self.print_btn.setText(_translate("Payment", "Chop qilish"))
@@ -205,11 +209,17 @@ class Ui_Payment(QMainWindow):
         self.set_directions()
         self.direction_id = self.direction.currentData()
         self.direction.currentIndexChanged.connect(self.on_change_direction)
+        self.groups_list = self.api.getGroups()
         self.set_groups()
+        self.teachers_list = self.api.getTeachers()
         self.group_id = self.group.currentData()
         self.group.currentIndexChanged.connect(self.on_change_group)
+        self.set_teacher()
         self.set_students(self.group_id)
-
+        self.studnet_id = self.student.currentData()
+        self.payment_list = self.api.getPaymentsByStudentId(self.studnet_id)
+        self.generate_table()
+        self.student.currentIndexChanged.connect(self.on_change_student)
 
     def on_change_direction(self, index):
         self.direction_id = self.direction.itemData(index)
@@ -219,14 +229,33 @@ class Ui_Payment(QMainWindow):
         self.group_id = self.group.itemData(index)
         self.set_students(self.group_id)
 
+    def on_change_student(self, index):
+        self.studnet_id = self.student.itemData(index)
+        self.payment_list = self.api.getPaymentsByStudentId(self.studnet_id)
+        self.generate_table()
+
+    def set_teacher(self):
+        for g in self.groups_list:
+            if g.id == self.group_id:
+                for t in self.teachers_list:
+                    if t.id == g.teacher_id:
+                        self.teacher.setText(t.name)
+
+    def generate_table(self):
+        self.payment_table.setRowCount(len(self.payment_list))
+        for i, data in enumerate(self.payment_list):
+            self.payment_table.setItem(i, 0, QTableWidgetItem(data.reports[0].direction_name))
+            self.payment_table.setItem(i, 1, QTableWidgetItem(data.reports[0].group_name))
+            self.payment_table.setItem(i, 2, QTableWidgetItem(str(data.reports[0].payment_month)))
+            self.payment_table.setItem(i, 3, QTableWidgetItem(str(data.reports[0].debt)))
+
     def set_directions(self):
         for direction in self.api.getDirections():
             self.direction.addItem(direction.name, direction.id)
 
     def set_groups(self):
-        groups = self.api.getGroups()
         self.group.clear()
-        direction_groups = filter(lambda g: g.direction_id == self.direction_id, groups)
+        direction_groups = filter(lambda g: g.direction_id == self.direction_id, self.groups_list)
         for group in direction_groups:
             self.group.addItem(group.name, group.id)
 
