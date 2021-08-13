@@ -10,8 +10,10 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 
+from PathResolver import resource_path
 from connections import Connection
 from payment import Ui_Payment
 
@@ -21,12 +23,12 @@ class Login_Form(QMainWindow):
         super().__init__()
         self.payment_ui = Payment
         self.setObjectName("Form")
-        self.resize(440, 540)
+        self.setFixedSize(365, 493)
         self.setStyleSheet("background-color: #60a3bc")
         self.message_box = QtWidgets.QMessageBox()
         self.api = connection
         self.login_box = QtWidgets.QFrame(self)
-        self.login_box.setGeometry(QtCore.QRect(20, 140, 400, 380))
+        self.login_box.setGeometry(QtCore.QRect(23, 90, 321, 380))
         self.login_box.setAutoFillBackground(False)
         self.login_box.setStyleSheet("  background: #f39c12;\n"
                                      "  border-radius: 5px;")
@@ -34,14 +36,14 @@ class Login_Form(QMainWindow):
         self.login_box.setFrameShadow(QtWidgets.QFrame.Raised)
         self.login_box.setObjectName("login_box")
         self.brand_logo = QtWidgets.QFrame(self.login_box)
-        self.brand_logo.setGeometry(QtCore.QRect(120, -80, 170, 170))
+        self.brand_logo.setGeometry(QtCore.QRect(77, -80, 170, 170))
         self.brand_logo.setStyleSheet("border-radius: 85px;\n"
                                       "background: #60a3bc;")
         self.brand_logo.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.brand_logo.setFrameShadow(QtWidgets.QFrame.Raised)
         self.brand_logo.setObjectName("brand_logo")
         self.login = QtWidgets.QLineEdit(self.login_box)
-        self.login.setGeometry(QtCore.QRect(120, 120, 241, 51))
+        self.login.setGeometry(QtCore.QRect(70, 120, 241, 51))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.login.setFont(font)
@@ -51,21 +53,29 @@ class Login_Form(QMainWindow):
         self.login.setText("")
         self.login.setObjectName("login")
         self.user_icon = QtWidgets.QLabel(self.login_box)
-        self.user_icon.setGeometry(QtCore.QRect(60, 120, 60, 51))
+        self.user_icon.setGeometry(QtCore.QRect(10, 120, 60, 51))
         self.user_icon.setStyleSheet("background-color: rgb(204, 0, 0);\n"
                                      "border-top-right-radius: 0;\n"
                                      "border-bottom-right-radius: 0;")
         self.user_icon.setText("")
         self.user_icon.setObjectName("user_icon")
+        self.user_icon.setAlignment(Qt.AlignCenter)
+        user_image = QtGui.QImage(resource_path('html/img/user.png'))
+        user_image = user_image.scaled(40, 40)
+        self.user_icon.setPixmap(QtGui.QPixmap.fromImage(user_image))
         self.key_icon = QtWidgets.QLabel(self.login_box)
-        self.key_icon.setGeometry(QtCore.QRect(60, 210, 60, 51))
+        self.key_icon.setGeometry(QtCore.QRect(10, 210, 60, 51))
         self.key_icon.setStyleSheet("background-color: rgb(204, 0, 0);\n"
                                     "border-top-right-radius: 0;\n"
                                     "border-bottom-right-radius: 0;")
         self.key_icon.setText("")
         self.key_icon.setObjectName("key_icon")
+        self.key_icon.setAlignment(Qt.AlignCenter)
+        key_image = QtGui.QImage(resource_path('html/img/key.png'))
+        key_image = key_image.scaled(40, 40)
+        self.key_icon.setPixmap(QtGui.QPixmap.fromImage(key_image))
         self.password = QtWidgets.QLineEdit(self.login_box)
-        self.password.setGeometry(QtCore.QRect(120, 210, 241, 51))
+        self.password.setGeometry(QtCore.QRect(70, 210, 241, 51))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.password.setFont(font)
@@ -75,7 +85,7 @@ class Login_Form(QMainWindow):
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setObjectName("password")
         self.pushButton = QtWidgets.QPushButton(self.login_box)
-        self.pushButton.setGeometry(QtCore.QRect(70, 294, 280, 51))
+        self.pushButton.setGeometry(QtCore.QRect(20, 294, 280, 51))
         font = QtGui.QFont()
         font.setPointSize(22)
         self.pushButton.setFont(font)
@@ -91,12 +101,15 @@ class Login_Form(QMainWindow):
                                       "color: #ffffff;\n"
                                       "}")
         self.pushButton.setObjectName("pushButton")
-        self.graphicsView = QtWidgets.QGraphicsView(self)
-        self.graphicsView.setGeometry(QtCore.QRect(150, 70, 150, 150))
+        self.graphicsView = QtWidgets.QLabel(self)
+        self.graphicsView.setGeometry(QtCore.QRect(110, 20, 150, 150))
         self.graphicsView.setStyleSheet("background-color: rgb(204, 0, 0);\n"
                                         "border-radius: 75px;")
+        self.graphicsView.setAlignment(Qt.AlignCenter)
         self.graphicsView.setObjectName("graphicsView")
-
+        logo_image = QtGui.QImage(resource_path('html/img/data-logo.png'))
+        logo_image = logo_image.scaled(130, 130)
+        self.graphicsView.setPixmap(QtGui.QPixmap.fromImage(logo_image))
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -126,7 +139,6 @@ class Login_Form(QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    # Form = QtWidgets.QMainWindow()
     connection = Connection()
     payment = Ui_Payment()
     ui = Login_Form(payment, connection)

@@ -4,9 +4,7 @@
  '''
 import win32api
 import win32print
-import traceback
 
-from tkinter.filedialog import askopenfilename
 from tkinter import *
 from tkinter import font, filedialog  # * doesn't import font or messagebox
 from tkinter import messagebox
@@ -63,6 +61,7 @@ def UploadAction(event=None):
 
 def PrintAction(event=None):
     PRINTER_DEFAULTS = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
+    print(_printer.get())
     pHandle = win32print.OpenPrinter(_printer.get(), PRINTER_DEFAULTS)
     level = 2
     properties = win32print.GetPrinter(pHandle, level)

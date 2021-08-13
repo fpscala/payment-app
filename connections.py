@@ -35,7 +35,7 @@ class Connection:
         self.the_response = Response()
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
-        self.server_url = "http://localhost:9000/"
+        self.server_url = "http://192.162.1.17:9000/"
         self.host = 'crm.dataonline.uz'
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
                             filename='logs.log')
@@ -93,24 +93,12 @@ class Connection:
                 'Content-Type': 'application/json'
             }
             response = requests.post(url=self.server_url + "admin/add-payment", data=data, headers=headers)
-            self.logger.debug(response)
-            self.logger.debug(response.text)
-            if response.status_code == 200:
-                self.the_response._content = {
-                    'code': 200, "text": response.text
-                }
-            else:
-                self.the_response._content = {
-                    'code': response.status_code, "error": response.text
-                }
-            return self.the_response.content
+            return response
 
         except Exception as ex:
             self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")
-            self.the_response._content = {
-                'code': 400, "error": "To'lovni ma'lumotlar bazasiga kiritishda xatolik yuz berdi!"
-            }
-            return self.the_response.content
+            self.the_response._content = "To'lovni ma'lumotlar bazasiga kiritishda xatolik yuz berdi!"
+            return self.the_response
 
     def getLastPaymentId(self):
         try:
