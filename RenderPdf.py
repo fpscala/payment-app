@@ -10,7 +10,7 @@ from PathResolver import resource_path
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
                     filename='logs.log')
 logger = logging.getLogger(__name__)
-filename = resource_path('render/print.pdf')
+filename = resource_path('render\print.pdf')
 
 
 def get_image_file_as_base64_data(file_path):
@@ -64,7 +64,9 @@ def generate_pdf(payment):
             'margin-left': '0',
             'user-style-sheet': css
         }
-        pdfkit.from_string(str(soup), filename, options=options)
+        path_wkthmltopdf = b'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+        config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
+        pdfkit.from_string(str(soup), filename, options=options, configuration=config)
     except Exception as ex:
         print(f'Error occurred while generate pdf. Error: {ex}')
         logger.error(f'Error occurred while generate pdf. Error: {ex}')
