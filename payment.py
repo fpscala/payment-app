@@ -381,8 +381,8 @@ class Ui_Payment(QMainWindow):
         properties = win32print.GetPrinter(pHandle, level)
         p_dev_mode = properties["pDevMode"]
         p_dev_mode.PaperSize = 0
-        p_dev_mode.PaperLength = 110  # SIZE IN 1/10 mm
-        p_dev_mode.PaperWidth = 80  # SIZE IN 1/10 mm
+        p_dev_mode.PaperLength = 1100  # SIZE IN 1/10 mm
+        p_dev_mode.PaperWidth = 800  # SIZE IN 1/10 mm
         properties["pDevMode"] = p_dev_mode
         win32print.SetPrinter(pHandle, level, properties, 0)
         logger.debug(f'Default printer selected: {printer}')
@@ -403,3 +403,4 @@ class Ui_Payment(QMainWindow):
         except Exception as ex:
             self.message_box.setText(f"There was an error printing the file :( \n {ex}")
             self.message_box.exec_()
+            win32print.ClosePrinter(pHandle)
