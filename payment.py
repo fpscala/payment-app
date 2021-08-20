@@ -10,10 +10,13 @@
 import json
 
 import win32api
+import win32con
 import win32print
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+import win32print
+import win32gui
 
 from PathResolver import resource_path
 from RenderPdf import logger, generate_pdf
@@ -374,16 +377,28 @@ class Ui_Payment(QMainWindow):
             self.send_payment(payment)
 
     def print_action(self):
+        DM_OUT_BUFFER = 0x02
+        DM_IN_BUFFER = 0x08
+        DM_DEFAULT_SOURCE = 0x200
         printer = win32print.GetDefaultPrinter()
         PRINTER_DEFAULTS = {"DesiredAccess": win32print.PRINTER_ALL_ACCESS}
         pHandle = win32print.OpenPrinter(printer, PRINTER_DEFAULTS)
         level = 2
         properties = win32print.GetPrinter(pHandle, level)
-        p_dev_mode = properties["pDevMode"]
-        p_dev_mode.PaperSize = 0
-        p_dev_mode.PaperLength = 1100  # SIZE IN 1/10 mm
-        p_dev_mode.PaperWidth = 800  # SIZE IN 1/10 mm
-        properties["pDevMode"] = p_dev_mode
+        devmode = properties["pDevMode"]
+        devmode.DefaultSource = 4
+        devmode.FormName = 'A7'
+        devmode.Fields |= (win32con.DM_FORMNAME |
+                           win32con.DM_PAPERSIZE |
+                           win32con.DM_PRINTQUALITY)
+        devmode.Fields = devmode.Fields | DM_DEFAULT_SOURCE
+        win32print.DocumentProperties(None, pHandle, printer, devmode, devmode, DM_IN_BUFFER | DM_OUT_BUFFER)
+        devmode.PrintQuality = win32con.DMRES_HIGH
+        devmode.Copies = 1
+        devmode.PaperSize = 0
+        devmode.PaperLength = 1100  # SIZE IN 1/10 mm
+        devmode.PaperWidth = 800  # SIZE IN 1/10 mm
+        properties["pDevMode"] = devmode
         win32print.SetPrinter(pHandle, level, properties, 0)
         logger.debug(f'Default printer selected: {printer}')
         logger.debug(f'File path: {filename}')
@@ -398,7 +413,7 @@ class Ui_Payment(QMainWindow):
             self.message_box.exec_()
             return
         try:
-            win32api.ShellExecute(0, "print", filename, '"%s"' % printer, ".", 0)
+            win32api.ShellExecute(0, "print", filename, printer, None, 0)
             win32print.ClosePrinter(pHandle)
         except Exception as ex:
             self.message_box.setText(f"There was an error printing the file :( \n {ex}")

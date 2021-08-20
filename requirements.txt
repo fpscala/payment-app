@@ -3,3 +3,6 @@ pypiwin32
 pdfkit~=0.6.1
 beautifulsoup4~=4.9.3
 PyQt5~=5.15.4
+pywin32~=301
+python-printer-escpos
+python-escpos
