@@ -392,27 +392,27 @@ class Ui_Payment(QMainWindow):
             Xprinter.textln(f" o'quv markazi\n Kirim order No: {self.id.text()}")
             Xprinter.ln()
             Xprinter.set(align='left', font='a')
-            Xprinter.control("HT", tab_size=30)
-            Xprinter.text("     To'lovchi:\t")
+            Xprinter.control("HT", tab_size=22)
+            Xprinter.text("   To'lovchi:\t")
             Xprinter.textln(self.student.currentText())
 
-            Xprinter.text("     To'lov summasi:\t")
+            Xprinter.text("   To'lov summasi:\t")
             Xprinter.textln(self.price.text())
 
-            Xprinter.text("     To'lov turi:\t")
+            Xprinter.text("   To'lov turi:\t")
             Xprinter.textln(self.type)
 
-            Xprinter.text("     Sana:\t")
+            Xprinter.text("   Sana:\t")
             date_time = datetime.now()
             Xprinter.textln(date_time.strftime("%d.%m.%Y %H:%M:%S"))
 
-            Xprinter.text("     Guruh:\t")
+            Xprinter.text("   Guruh:\t")
             Xprinter.textln(self.group.currentText())
 
-            Xprinter.text("     Kurs oyi uchun:\t")
+            Xprinter.text("   Kurs oyi uchun:\t")
             Xprinter.textln(self.month.currentText())
 
-            Xprinter.text("     Qarz qoldig'i:\t")
+            Xprinter.text("   Qarz qoldig'i:\t")
             Xprinter.textln(self.get_debt())
             Xprinter.ln()
 
@@ -420,7 +420,7 @@ class Ui_Payment(QMainWindow):
             if copies == 1:
                 Xprinter.textln('@data_learning_centre\n')
                 Xprinter.set(align='left', bold=True)
-                Xprinter.text('     Imzo:     _______________________________')
+                Xprinter.text('   Imzo:     _______________________________')
             else:
                 Xprinter.text('@data_learning_centre\n'
                               '+99899 757 88 86 \n'
