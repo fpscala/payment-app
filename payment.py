@@ -370,8 +370,8 @@ class Ui_Payment(QMainWindow):
 
     def print_action(self):
         try:
-            # Xprinter = printer.Usb(0x1046, 0x20497)
-            Xprinter = printer.Network("192.162.1.101", 9100)
+            Xprinter = printer.Usb(0x1fc9, 0x2016)
+            # Xprinter = printer.Network("192.162.1.101", 9100)
             for copies in range(0, 2):
                 Xprinter.set(bold=True, align='center')
                 Xprinter.image("img/data_logo_250.png")
