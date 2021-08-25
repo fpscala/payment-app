@@ -4,7 +4,7 @@ from escpos import *
 Xprinter = printer.Network("192.162.1.101", 9100)
 for copies in range(0, 2):
     Xprinter.set(bold=True, align='center')
-    Xprinter.image("html/img/data_logo_250.png")
+    Xprinter.image("img/data_logo_250.png")
     Xprinter.text("\"DATA UNION\" MCHJ")
     Xprinter.set(align='center')
     Xprinter.text(" ga qarashli\n")

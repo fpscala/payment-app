@@ -10,18 +10,12 @@
 import json
 from datetime import datetime
 
-import win32api
-import win32con
-import win32print
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
-import win32print
-import win32gui
 from escpos import printer
 
 from PathResolver import resource_path
-from RenderPdf import logger, generate_pdf
 from paymentObject import Payment
 
 filename = resource_path('render/print.pdf')
@@ -378,52 +372,56 @@ class Ui_Payment(QMainWindow):
             self.send_payment(payment)
 
     def print_action(self):
-        # Xprinter = printer.Usb(0x1046, 0x20497)
-        Xprinter = printer.Network("192.162.1.101", 9100)
-        for copies in range(0, 2):
-            Xprinter.set(bold=True, align='center')
-            Xprinter.image("html/img/data_logo_250.png")
-            Xprinter.text("\"DATA UNION\" MCHJ")
-            Xprinter.set(align='center')
-            Xprinter.text(" ga qarashli\n")
-            Xprinter.set(bold=True, align='center')
-            Xprinter.text("\"DATA\"")
-            Xprinter.set(align='center')
-            Xprinter.textln(f" o'quv markazi\n Kirim order No: {self.id.text()}")
-            Xprinter.ln()
-            Xprinter.set(align='left', font='a')
-            Xprinter.control("HT", tab_size=22)
-            Xprinter.text("   To'lovchi:\t")
-            Xprinter.textln(self.student.currentText())
+        try:
+            # Xprinter = printer.Usb(0x1046, 0x20497)
+            Xprinter = printer.Network("192.162.1.101", 9100)
+            for copies in range(0, 2):
+                Xprinter.set(bold=True, align='center')
+                Xprinter.image("img/data_logo_250.png")
+                Xprinter.text("\"DATA UNION\" MCHJ")
+                Xprinter.set(align='center')
+                Xprinter.text(" ga qarashli\n")
+                Xprinter.set(bold=True, align='center')
+                Xprinter.text("\"DATA\"")
+                Xprinter.set(align='center')
+                Xprinter.textln(f" o'quv markazi\n Kirim order No: {self.id.text()}")
+                Xprinter.ln()
+                Xprinter.set(align='left', font='a')
+                Xprinter.control("HT", tab_size=22)
+                Xprinter.text("   To'lovchi:\t")
+                Xprinter.textln(self.student.currentText())
 
-            Xprinter.text("   To'lov summasi:\t")
-            Xprinter.textln(self.price.text())
+                Xprinter.text("   To'lov summasi:\t")
+                Xprinter.textln(self.price.text())
 
-            Xprinter.text("   To'lov turi:\t")
-            Xprinter.textln(self.type)
+                Xprinter.text("   To'lov turi:\t")
+                Xprinter.textln(self.type)
 
-            Xprinter.text("   Sana:\t")
-            date_time = datetime.now()
-            Xprinter.textln(date_time.strftime("%d.%m.%Y %H:%M:%S"))
+                Xprinter.text("   Sana:\t")
+                date_time = datetime.now()
+                Xprinter.textln(date_time.strftime("%d.%m.%Y %H:%M:%S"))
 
-            Xprinter.text("   Guruh:\t")
-            Xprinter.textln(self.group.currentText())
+                Xprinter.text("   Guruh:\t")
+                Xprinter.textln(self.group.currentText())
 
-            Xprinter.text("   Kurs oyi uchun:\t")
-            Xprinter.textln(self.month.currentText())
+                Xprinter.text("   Kurs oyi uchun:\t")
+                Xprinter.textln(self.month.currentText())
 
-            Xprinter.text("   Qarz qoldig'i:\t")
-            Xprinter.textln(self.get_debt())
-            Xprinter.ln()
+                Xprinter.text("   Qarz qoldig'i:\t")
+                Xprinter.textln(self.get_debt())
+                Xprinter.ln()
 
-            Xprinter.set(align='center', font='b')
-            if copies == 1:
-                Xprinter.textln('@data_learning_centre\n')
-                Xprinter.set(align='left', bold=True)
-                Xprinter.text('   Imzo:     _______________________________')
-            else:
-                Xprinter.text('@data_learning_centre\n'
-                              '+99899 757 88 86 \n'
-                              '+99899 758 88 86 \n'
-                              '+99899 759 88 86')
-            Xprinter.cut()
+                Xprinter.set(align='center', font='b')
+                if copies == 1:
+                    Xprinter.textln('@data_learning_centre\n')
+                    Xprinter.set(align='left', bold=True)
+                    Xprinter.text('   Imzo:     _______________________________')
+                else:
+                    Xprinter.text('@data_learning_centre\n'
+                                  '+99899 757 88 86 \n'
+                                  '+99899 758 88 86 \n'
+                                  '+99899 759 88 86')
+                Xprinter.cut()
+        except Exception as ex:
+            self.message_box.setText(f"Xatolik yuz berdi: {ex}")
+            self.message_box.exec_()
