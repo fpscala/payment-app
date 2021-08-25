@@ -15,10 +15,7 @@ from PyQt5.QtCore import QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from escpos import printer
 
-from PathResolver import resource_path
 from paymentObject import Payment
-
-filename = resource_path('render/print.pdf')
 
 
 class Ui_Payment(QMainWindow):
