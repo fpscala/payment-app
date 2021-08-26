@@ -35,7 +35,7 @@ class Connection:
         self.the_response = Response()
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
-        self.server_url = "http://192.168.43.111:9000/"
+        self.server_url = "http://192.162.1.17:9090/"
         self.host = 'crm.dataonline.uz'
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
                             filename='logs.log')
@@ -43,7 +43,7 @@ class Connection:
 
     def getDirections(self):
         try:
-            response = requests.get(self.server_url + "admin/get-all-directions", headers=self.headers)
+            response = requests.get(self.server_url + "app/directions", headers=self.headers)
             return json.loads(response.text, object_hook=direction_decoder)
 
         except Exception as ex:
@@ -52,7 +52,7 @@ class Connection:
 
     def getGroups(self):
         try:
-            response = requests.get(self.server_url + 'admin/get-all-groups', headers=self.headers)
+            response = requests.get(self.server_url + 'app/groups', headers=self.headers)
             return json.loads(response.text, object_hook=group_decoder)
 
         except Exception as ex:
@@ -61,7 +61,7 @@ class Connection:
 
     def getTeachers(self):
         try:
-            response = requests.get(self.server_url + 'admin/get-teachers', headers=self.headers)
+            response = requests.get(self.server_url + 'app/teachers', headers=self.headers)
             return json.loads(response.text, object_hook=teacher_decoder)
 
         except Exception as ex:
@@ -70,7 +70,7 @@ class Connection:
 
     def getStudentByGroupId(self, groupId):
         try:
-            response = requests.get(self.server_url + 'admin/students/' + str(groupId), headers=self.headers)
+            response = requests.get(self.server_url + 'app/students/' + str(groupId), headers=self.headers)
             return json.loads(response.text, object_hook=student_decoder)
 
         except Exception as ex:
@@ -79,7 +79,7 @@ class Connection:
 
     def getPaymentsByStudentId(self, studentId):
         try:
-            response = requests.get(self.server_url + 'admin/get-payment-debt/' + str(studentId), headers=self.headers)
+            response = requests.get(self.server_url + 'app/payment-debt/' + str(studentId), headers=self.headers)
             return json.loads(response.text, object_hook=payment_decoder)
 
         except Exception as ex:
@@ -92,7 +92,7 @@ class Connection:
                 'Cookie': self.cookies,
                 'Content-Type': 'application/json'
             }
-            response = requests.post(url=self.server_url + "admin/add-payment", data=data, headers=headers)
+            response = requests.post(url=self.server_url + "app/add-payment", data=data, headers=headers)
             return response
 
         except Exception as ex:
@@ -102,7 +102,7 @@ class Connection:
 
     def getLastPaymentId(self):
         try:
-            response = requests.get(self.server_url + 'admin/get-last-payment-number', headers=self.headers)
+            response = requests.get(self.server_url + 'app/last-payment-number', headers=self.headers)
             return response.text
 
         except Exception as ex:
