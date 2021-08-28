@@ -35,7 +35,7 @@ class Connection:
         self.the_response = Response()
         self.the_response.error_type = "unauthorized"
         self.the_response.status_code = 401
-        self.server_url = "http://192.162.1.17:9090/"
+        self.server_url = "http://192.162.1.17:9000/"
         self.host = 'crm.dataonline.uz'
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG,
                             filename='logs.log')
@@ -70,18 +70,22 @@ class Connection:
 
     def getStudentByGroupId(self, groupId):
         try:
-            response = requests.get(self.server_url + 'app/students/' + str(groupId), headers=self.headers)
-            return json.loads(response.text, object_hook=student_decoder)
-
+            if groupId:
+                response = requests.get(self.server_url + 'app/students/' + str(groupId), headers=self.headers)
+                return json.loads(response.text, object_hook=student_decoder)
+            else:
+                return []
         except Exception as ex:
             self.logger.error(f"Error occurred while get student by group-id. Error: {ex}")
             return []
 
     def getPaymentsByStudentId(self, studentId):
         try:
-            response = requests.get(self.server_url + 'app/payment-debt/' + str(studentId), headers=self.headers)
-            return json.loads(response.text, object_hook=payment_decoder)
-
+            if studentId:
+                response = requests.get(self.server_url + 'app/payment-debt/' + str(studentId), headers=self.headers)
+                return json.loads(response.text, object_hook=payment_decoder)
+            else:
+                return []
         except Exception as ex:
             self.logger.error(f"Error occurred while get payments by student-id. Error: {ex}")
             return []

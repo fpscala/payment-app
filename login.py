@@ -11,7 +11,7 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget
 
 from PathResolver import resource_path
 from connections import Connection
@@ -24,6 +24,7 @@ class Login_Form(QMainWindow):
         self.payment_ui = Payment
         self.setObjectName("Form")
         self.setFixedSize(365, 493)
+        self.center()
         self.setStyleSheet("background-color: #60a3bc")
         self.message_box = QtWidgets.QMessageBox()
         self.api = connection
@@ -136,6 +137,18 @@ class Login_Form(QMainWindow):
                 self.message_box.setText(response._content)
                 self.message_box.exec_()
 
+    def center(self):
+        # geometry of the main window
+        qr = self.frameGeometry()
+
+        # center point of screen
+        cp = QDesktopWidget().availableGeometry().center()
+
+        # move rectangle's center point to screen's center point
+        qr.moveCenter(cp)
+
+        # top left of rectangle becomes top left of window centering it
+        self.move(qr.topLeft())
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

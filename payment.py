@@ -1,12 +1,35 @@
 import json
 from datetime import datetime
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QTimer, QDateTime
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QDesktopWidget
 from escpos import printer
 
 from paymentObject import Payment
+
+
+class ComboBox(QtWidgets.QComboBox):
+    def paintEvent(self, event):
+
+        painter = QtWidgets.QStylePainter(self)
+        painter.setPen(self.palette().color(QtGui.QPalette.Text))
+
+        # draw the combobox frame, focusrect and selected etc.
+        opt = QtWidgets.QStyleOptionComboBox()
+        self.initStyleOption(opt)
+        painter.drawComplexControl(QtWidgets.QStyle.CC_ComboBox, opt)
+
+        if self.currentIndex() < 0:
+            opt.palette.setBrush(
+                QtGui.QPalette.ButtonText,
+                opt.palette.brush(QtGui.QPalette.ButtonText).color().lighter(),
+            )
+            if self.placeholderText():
+                opt.currentText = self.placeholderText()
+
+        # draw the icon and text
+        painter.drawControl(QtWidgets.QStyle.CE_ComboBoxLabel, opt)
 
 
 class Ui_Payment(QMainWindow):
@@ -18,6 +41,7 @@ class Ui_Payment(QMainWindow):
     def setupUi(self, connection):
         self.setObjectName("Payment")
         self.setFixedSize(1200, 580)
+        self.center()
         self.api = connection
         self.layoutWidget = QtWidgets.QWidget(self)
         self.layoutWidget.setGeometry(QtCore.QRect(14, 11, 1170, 542))
@@ -41,8 +65,10 @@ class Ui_Payment(QMainWindow):
         self.month = QtWidgets.QComboBox(self.layoutWidget)
         self.month.setObjectName("month")
         self.gridLayout.addWidget(self.month, 4, 4, 1, 1)
-        self.group = QtWidgets.QComboBox(self.layoutWidget)
+        self.group = ComboBox(self.layoutWidget)
         self.group.setObjectName("group")
+        self.group.setPlaceholderText("Guruhni tanlang.")
+        self.group.setCurrentIndex(-1)
         self.gridLayout.addWidget(self.group, 5, 4, 1, 1)
         self.comment_label = QtWidgets.QLabel(self.layoutWidget)
         self.comment_label.setObjectName("comment_label")
@@ -75,8 +101,10 @@ class Ui_Payment(QMainWindow):
         self.date.setReadOnly(True)
         self.date.setObjectName("date")
         self.gridLayout.addWidget(self.date, 0, 1, 1, 1)
-        self.direction = QtWidgets.QComboBox(self.layoutWidget)
+        self.direction = ComboBox(self.layoutWidget)
         self.direction.setObjectName("direction")
+        self.direction.setPlaceholderText("Yo'nalishni tanlang.")
+        self.direction.setCurrentIndex(-1)
         self.gridLayout.addWidget(self.direction, 5, 1, 1, 1)
         self.student_label = QtWidgets.QLabel(self.layoutWidget)
         self.student_label.setObjectName("student_label")
@@ -104,8 +132,10 @@ class Ui_Payment(QMainWindow):
         self.id = QtWidgets.QLineEdit(self.layoutWidget)
         self.id.setObjectName("id")
         self.gridLayout.addWidget(self.id, 0, 4, 1, 1)
-        self.student = QtWidgets.QComboBox(self.layoutWidget)
+        self.student = ComboBox(self.layoutWidget)
         self.student.setObjectName("student")
+        self.student.setPlaceholderText("O'quvchini tanlang.")
+        self.student.setCurrentIndex(-1)
         self.gridLayout.addWidget(self.student, 6, 1, 1, 4)
         self.checkBox = QtWidgets.QCheckBox(self.layoutWidget)
         self.checkBox.setLayoutDirection(QtCore.Qt.RightToLeft)
@@ -214,6 +244,7 @@ class Ui_Payment(QMainWindow):
         self.naqd.toggled.connect(self.onChecked)
         self.plastik.toggled.connect(self.onChecked)
         self.hisob_raqam.toggled.connect(self.onChecked)
+        self.checkBox.toggled.connect(self.onCheckCheckbox)
         self.timer = QTimer()
         self.timer.timeout.connect(self.show_time)
         self.timer.start(1000)
@@ -233,6 +264,19 @@ class Ui_Payment(QMainWindow):
         self.payment_list = self.api.getPaymentsByStudentId(self.student_id)
         self.generate_table()
         self.student.currentIndexChanged.connect(self.on_change_student)
+
+    def center(self):
+        # geometry of the main window
+        qr = self.frameGeometry()
+
+        # center point of screen
+        cp = QDesktopWidget().availableGeometry().center()
+
+        # move rectangle's center point to screen's center point
+        qr.moveCenter(cp)
+
+        # top left of rectangle becomes top left of window centering it
+        self.move(qr.topLeft())
 
     def on_change_direction(self, index):
         self.direction_id = self.direction.itemData(index)
@@ -291,6 +335,17 @@ class Ui_Payment(QMainWindow):
         if radio_btn.isChecked():
             self.type = radio_btn.text()
 
+    def onCheckCheckbox(self):
+        check_box = self.sender()
+        self.direction.setEnabled(not check_box.isChecked())
+        if check_box.isChecked():
+            self.group.clear()
+            not_active_group = filter(lambda g: g.isActive == False, self.groups_list)
+            for group in not_active_group:
+                self.group.addItem(group.name, group.id)
+        else:
+            self.set_groups()
+
     def check_validation(self):
         if not self.id.text():
             self.message_box.setText("Iltimos chek raqamini kiriting!")
@@ -343,6 +398,11 @@ class Ui_Payment(QMainWindow):
     def send_payment(self, payment):
         data = json.dumps(payment.__dict__)
         result = self.api.addPayment(data)
+        self.student.setCurrentIndex(-1)
+        self.direction.setCurrentIndex(-1)
+        self.group.setCurrentIndex(-1)
+        self.month.setCurrentIndex(0)
+        self.price.setText('')
         if result.status_code == 200:
             self.id.setText(self.api.getLastPaymentId())
             self.payment_list = self.api.getPaymentsByStudentId(self.student_id)
