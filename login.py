@@ -53,6 +53,7 @@ class Login_Form(QMainWindow):
                                  "border-top-left-radius: 0;")
         self.login.setText("")
         self.login.setObjectName("login")
+        self.login.returnPressed.connect(self.on_submit)
         self.user_icon = QtWidgets.QLabel(self.login_box)
         self.user_icon.setGeometry(QtCore.QRect(10, 120, 60, 51))
         self.user_icon.setStyleSheet("background-color: rgb(204, 0, 0);\n"
@@ -85,6 +86,7 @@ class Login_Form(QMainWindow):
                                     "border-top-left-radius: 0;")
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setObjectName("password")
+        self.password.returnPressed.connect(self.on_submit)
         self.pushButton = QtWidgets.QPushButton(self.login_box)
         self.pushButton.setGeometry(QtCore.QRect(20, 294, 280, 51))
         font = QtGui.QFont()
