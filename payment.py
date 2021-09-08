@@ -6,6 +6,7 @@ from PyQt5.QtCore import QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QDesktopWidget
 from escpos import printer
 
+from PathResolver import resource_path
 from paymentObject import Payment
 
 
@@ -284,6 +285,7 @@ class Ui_Payment(QMainWindow):
 
     def on_change_group(self, index):
         self.group_id = self.group.itemData(index)
+        self.set_teacher()
         self.set_students(self.group_id)
 
     def on_change_student(self, index):
@@ -403,6 +405,7 @@ class Ui_Payment(QMainWindow):
         self.group.setCurrentIndex(-1)
         self.month.setCurrentIndex(0)
         self.price.setText('')
+        self.id.setText(self.api.getLastPaymentId())
         if result.status_code == 200:
             self.id.setText(self.api.getLastPaymentId())
             self.payment_list = self.api.getPaymentsByStudentId(self.student_id)
@@ -428,10 +431,10 @@ class Ui_Payment(QMainWindow):
     def print_action(self):
         try:
             Xprinter = printer.Usb(0x1fc9, 0x2016)
-            # Xprinter = printer.Network("192.162.1.101", 9100)
+            # Xprinter = printer.Network("192.162.1.104", 9100)
             for copies in range(0, 2):
                 Xprinter.set(bold=True, align='center')
-                Xprinter.image("img/data_logo_250.png")
+                Xprinter.image(resource_path("img/data_logo_250.png"))
                 Xprinter.text("\"DATA UNION\" MCHJ")
                 Xprinter.set(align='center')
                 Xprinter.text(" ga qarashli\n")
